@@ -9,15 +9,17 @@ upc_place = 0
 asin_place = 1
 amazon_place = 2
 walmart_place = 3
-my_list_price_place = 4
-ebay_price_start_place = 5
+my_list_price_amz_wal_upc_place = 4
+my_list_price_anything_place = 5
+ebay_price_start_place = 6
 
 for index, row in df.iterrows():
     upc = row[upc_place]
     asin = row[asin_place]
     amazon_price = row[amazon_place]
     walmart_price = row[walmart_place]
-    my_list_price = row[my_list_price_place]
+    my_list_price_amz_wal_upc = row[my_list_price_amz_wal_upc_place]
+    my_list_price_anything = row[my_list_price_anything_place]
     algo_list_price = 0
     presentage_off = 0
     
@@ -52,7 +54,7 @@ for index, row in df.iterrows():
         'Amazon_Price': amazon_price,
         'Walmart_Price': walmart_price,
         'My_List_Price_UPC/Amz/Wal':"",
-        'My_List_Price_Anything': my_list_price,
+        'My_List_Price_Anything': my_list_price_anything,
         'Lowest_Ebay_Price': lowest_ebay_price,
         'Highest_Ebay_Price': highest_ebay_price,
         'Mean_eBay_Price': mean_price,
