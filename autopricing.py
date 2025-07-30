@@ -9,42 +9,57 @@ upc_place = 0
 asin_place = 1
 amazon_place = 2
 walmart_place = 3
-ebay_price_start_place = 4
+my_list_price_place = 4
+ebay_price_start_place = 5
 
 for index, row in df.iterrows():
     upc = row[upc_place]
     asin = row[asin_place]
-    walmart_price = row[walmart_place]
     amazon_price = row[amazon_place]
+    walmart_price = row[walmart_place]
+    my_list_price = row[my_list_price_place]
+    algo_list_price = 0
+    presentage_off = 0
+    
 
     ebay_prices = pd.to_numeric(row[ebay_price_start_place:], errors='coerce').dropna().tolist()
     lowest_ebay_price = row[ebay_price_start_place]
-    highest_ebay_price = row[len(row)-1] 
-
-    if len(ebay_prices) >= 2:
-        prices = np.array(ebay_prices)
-        mean_price = np.mean(prices)
-        stdev_price = np.std(prices, ddof=1)
-        cv = (stdev_price / mean_price) * 100
-        q1, q3 = np.percentile(prices, [25, 75])
-        iqr = q3 - q1
-        median_price = np.median(prices)
-        mad = np.median(np.abs(prices - median_price))
-        range_to_mean_ratio = ((np.max(prices) - np.min(prices)) / mean_price) * 100
-
-        cv_confidence = 'Confident' if cv <= 10 else 'Cautious' if cv <= 20 else 'Review'
-        iqr_confidence = 'Confident' if (iqr / mean_price) * 100 <= 10 else 'Cautious' if (iqr / mean_price) * 100 <= 20 else 'Review'
-        mad_confidence = 'Confident' if (mad / median_price) * 100 <= 10 else 'Cautious' if (mad / median_price) * 100 <= 20 else 'Review'
-        range_confidence = 'Confident' if range_to_mean_ratio <= 10 else 'Cautious' if range_to_mean_ratio <= 20 else 'Review'
+    highest_ebay_price = row[len(row)-1]
+    
+    if (walmart_price or amazon_price) < lowest_ebay_price:
+        if amazon_price > walmart_place:
+            algo_list_price = walmart_place
+        else:
+            algo_list_price = amazon_price
     else:
-        mean_price = stdev_price = cv = iqr = mad = range_to_mean_ratio = np.nan
-        cv_confidence = iqr_confidence = mad_confidence = range_confidence = 'Review'
+        if len(ebay_prices) >= 2:
+            prices = np.array(ebay_prices)
+            mean_price = np.mean(prices)
+            stdev_price = np.std(prices, ddof=1)
+            cv = (stdev_price / mean_price) * 100
+            q1, q3 = np.percentile(prices, [25, 75])
+            iqr = q3 - q1
+            median_price = np.median(prices)
+            mad = np.median(np.abs(prices - median_price))
+            range_to_mean_ratio = ((np.max(prices) - np.min(prices)) / mean_price) * 100
+
+            cv_confidence = 'Confident' if cv <= 10 else 'Cautious' if cv <= 20 else 'Review'
+            iqr_confidence = 'Confident' if (iqr / mean_price) * 100 <= 10 else 'Cautious' if (iqr / mean_price) * 100 <= 20 else 'Review'
+            mad_confidence = 'Confident' if (mad / median_price) * 100 <= 10 else 'Cautious' if (mad / median_price) * 100 <= 20 else 'Review'
+            range_confidence = 'Confident' if range_to_mean_ratio <= 10 else 'Cautious' if range_to_mean_ratio <= 20 else 'Review'
+        else:
+            mean_price = stdev_price = cv = iqr = mad = range_to_mean_ratio = np.nan
+            cv_confidence = iqr_confidence = mad_confidence = range_confidence = 'Review'
 
     results.append({
         'UPC': upc,
         'ASIN': asin,
         'Amazon_Price': amazon_price,
         'Walmart_Price': walmart_price,
+        'My_List_Price_UPC/Amz/Wal':"",
+        'My_List_Price_Anything': my_list_price,
+        'Lowest_Ebay_Price': lowest_ebay_price,
+        'Highest_Ebay_Price': highest_ebay_price,
         'Mean_eBay_Price': mean_price,
         'Std_Dev': stdev_price,
         'Coeff_of_Variation_%': cv,
