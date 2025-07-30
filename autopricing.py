@@ -46,7 +46,7 @@ for index, row in df.iterrows():
         range_confidence = 'Confident' if range_to_mean_ratio <= 10 else 'Cautious' if range_to_mean_ratio <= 20 else 'Review'
     else:
         mean_price = stdev_price = cv = iqr = mad = range_to_mean_ratio = np.nan
-        cv_confidence = iqr_confidence = mad_confidence = range_confidence = 'Review'
+        cv_confidence = iqr_confidence = mad_confidence = range_confidence = 'Review, not enough listings'
 
     results.append({
         'UPC': upc,
