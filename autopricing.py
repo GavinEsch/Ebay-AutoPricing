@@ -26,30 +26,25 @@ for index, row in df.iterrows():
     lowest_ebay_price = row[ebay_price_start_place]
     highest_ebay_price = row[len(row)-1]
     
-    if (walmart_price or amazon_price) < lowest_ebay_price:
-        if amazon_price > walmart_place:
-            algo_list_price = walmart_place
-        else:
-            algo_list_price = amazon_price
-    else:
-        if len(ebay_prices) >= 2:
-            prices = np.array(ebay_prices)
-            mean_price = np.mean(prices)
-            stdev_price = np.std(prices, ddof=1)
-            cv = (stdev_price / mean_price) * 100
-            q1, q3 = np.percentile(prices, [25, 75])
-            iqr = q3 - q1
-            median_price = np.median(prices)
-            mad = np.median(np.abs(prices - median_price))
-            range_to_mean_ratio = ((np.max(prices) - np.min(prices)) / mean_price) * 100
 
-            cv_confidence = 'Confident' if cv <= 10 else 'Cautious' if cv <= 20 else 'Review'
-            iqr_confidence = 'Confident' if (iqr / mean_price) * 100 <= 10 else 'Cautious' if (iqr / mean_price) * 100 <= 20 else 'Review'
-            mad_confidence = 'Confident' if (mad / median_price) * 100 <= 10 else 'Cautious' if (mad / median_price) * 100 <= 20 else 'Review'
-            range_confidence = 'Confident' if range_to_mean_ratio <= 10 else 'Cautious' if range_to_mean_ratio <= 20 else 'Review'
-        else:
-            mean_price = stdev_price = cv = iqr = mad = range_to_mean_ratio = np.nan
-            cv_confidence = iqr_confidence = mad_confidence = range_confidence = 'Review'
+    if len(ebay_prices) >= 2:
+        prices = np.array(ebay_prices)
+        mean_price = np.mean(prices)
+        stdev_price = np.std(prices, ddof=1)
+        cv = (stdev_price / mean_price) * 100
+        q1, q3 = np.percentile(prices, [25, 75])
+        iqr = q3 - q1
+        median_price = np.median(prices)
+        mad = np.median(np.abs(prices - median_price))
+        range_to_mean_ratio = ((np.max(prices) - np.min(prices)) / mean_price) * 100
+
+        cv_confidence = 'Confident' if cv <= 10 else 'Cautious' if cv <= 20 else 'Review'
+        iqr_confidence = 'Confident' if (iqr / mean_price) * 100 <= 10 else 'Cautious' if (iqr / mean_price) * 100 <= 20 else 'Review'
+        mad_confidence = 'Confident' if (mad / median_price) * 100 <= 10 else 'Cautious' if (mad / median_price) * 100 <= 20 else 'Review'
+        range_confidence = 'Confident' if range_to_mean_ratio <= 10 else 'Cautious' if range_to_mean_ratio <= 20 else 'Review'
+    else:
+        mean_price = stdev_price = cv = iqr = mad = range_to_mean_ratio = np.nan
+        cv_confidence = iqr_confidence = mad_confidence = range_confidence = 'Review'
 
     results.append({
         'UPC': upc,
