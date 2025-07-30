@@ -53,7 +53,7 @@ for index, row in df.iterrows():
         'ASIN': asin,
         'Amazon_Price': amazon_price,
         'Walmart_Price': walmart_price,
-        'My_List_Price_UPC/Amz/Wal':"",
+        'My_List_Price_UPC/Amz/Wal': my_list_price_amz_wal_upc,
         'My_List_Price_Anything': my_list_price_anything,
         'Lowest_Ebay_Price': lowest_ebay_price,
         'Highest_Ebay_Price': highest_ebay_price,
