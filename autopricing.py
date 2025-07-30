@@ -44,6 +44,7 @@ for index, row in df.iterrows():
         'UPC': upc,
         'ASIN': asin,
         'Amazon_Price': amazon_price,
+        'Walmart_Price': walmart_price,
         'Mean_eBay_Price': mean_price,
         'Std_Dev': stdev_price,
         'Coeff_of_Variation_%': cv,
